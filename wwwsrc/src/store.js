@@ -6,7 +6,7 @@ import router from './router'
 Vue.use(Vuex)
 
 let auth = Axios.create({
-  baseURL: "//localhost:5000/account/",
+  baseURL: "//localhost:5000/Account/",
   timeout: 3000,
   withCredentials: true
 })
@@ -28,13 +28,14 @@ export default new Vuex.Store({
   },
   actions: {
     register({ commit, dispatch }, newUser) {
-      auth.post('register', newUser)
+      auth.post('Register', newUser)
         .then(res => {
           commit('setUser', res.data)
           router.push({ name: 'home' })
         })
         .catch(e => {
           console.log('[registration failed] :', e)
+          alert(e.message)
         })
     },
     authenticate({ commit, dispatch }) {
@@ -45,16 +46,18 @@ export default new Vuex.Store({
         })
         .catch(e => {
           console.log('not authenticated')
+          //alert(e.message)
         })
     },
     login({ commit, dispatch }, creds) {
-      auth.post('login', creds)
+      auth.post('Login', creds)
         .then(res => {
           commit('setUser', res.data)
           router.push({ name: 'home' })
         })
         .catch(e => {
-          console.log('Login Failed')
+          console.log('Login Failed: ', e)
+          alert(e.message)
         })
     }
   }
