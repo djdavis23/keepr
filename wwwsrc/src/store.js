@@ -24,6 +24,10 @@ export default new Vuex.Store({
   mutations: {
     setUser(state, user) {
       state.user = user
+    },
+    logout(state) {
+      state.user = {}
+      router.push('login')
     }
   },
   actions: {
@@ -59,6 +63,11 @@ export default new Vuex.Store({
           console.log('Login Failed: ', e)
           alert(e.message)
         })
+    },
+    logout({ commit }) {
+      auth.delete('Logout')
+        .then(res => commit('logout'))
+        .catch(err => console.error(err))
     }
   }
 })

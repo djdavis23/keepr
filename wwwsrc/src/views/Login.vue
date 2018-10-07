@@ -1,31 +1,32 @@
 <template>
-    <div class="login container-fluid">
-        <div class="row header bg-primary">
-            <div class="col-6">
-                <h1 class="mt-2 text-white">UnPinterested</h1>
-            </div>
-            <div class="col-6">
-                <button @click="loginForm = !loginForm" class="btn btn-secondary mb-3 mt-3">Login</button>
-                <button @click="registerForm = !registerForm" class="btn btn-secondary ml-2 mb-3 mt-3">Register</button>
-            </div>
-        </div>
-        <div>
-            <form v-if="loginForm" @submit.prevent="loginUser">
-                <input type="email" v-model="creds.email" placeholder="email">
-                <input type="password" v-model="creds.password" placeholder="password">
-                <button type="submit">Login</button>
-            </form>
-        </div>
-        <div>
-            <form v-if="registerForm" @submit.prevent="register">
-                <input type="text" v-model="newUser.username" placeholder="name">
-                <input type="email" v-model="newUser.email" placeholder="email">
-                <input type="password" v-model="newUser.password" placeholder="password">
-                <button type="submit">Register</button>
-            </form>
-        </div>
-
-    </div>
+    <v-layout row wrap class="header blue accent-2">
+        <v-flex xs12 sm6 justify-start>
+            <h1 class="mt-3 white--text font-weight-bold font-italic">UnPinterested</h1>
+        </v-flex>
+        <v-flex xs12 sm6 justify-end>
+            <v-btn round @click="loginForm = !loginForm" class="btn btn-secondary mb-3 mt-3">Login</v-btn>
+            <v-btn round @click="registerForm = !registerForm" class="btn btn-secondary ml-2 mb-3 mt-3">Register</v-btn>
+        </v-flex>
+        <v-flex xs12 sm6 offset-sm3>
+            <v-card>
+                <form v-if="loginForm" @submit.prevent="loginUser">
+                    <input type="email" v-model="creds.email" placeholder="email">
+                    <input type="password" v-model="creds.password" placeholder="password">
+                    <v-btn round color="green accent-3" type="submit">Login</v-btn>
+                </form>
+            </v-card>
+        </v-flex>
+        <v-flex xs12 sm10 offset-sm1>
+            <v-card>
+                <form v-if="registerForm" @submit.prevent="register">
+                    <input type="text" v-model="newUser.username" placeholder="name">
+                    <input type="email" v-model="newUser.email" placeholder="email">
+                    <input type="password" v-model="newUser.password" placeholder="password">
+                    <v-btn round color="green accent-3" type="submit">Register</v-btn>
+                </form>
+            </v-card>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>
@@ -61,3 +62,6 @@
 
     };
 </script>
+<style>
+
+</style>
