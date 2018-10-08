@@ -15,14 +15,32 @@ namespace keepr.Repositories
       _db = db;
     }
 
-    //GET ALL KEEPS
-    public IEnumerable<Keep> GetKeeps()
+    //GET 40 MOST RECENT KEEPS
+    //DO NOT RETURN PRIVATE KEEPS BY ANOTHER USER
+    public IEnumerable<Keep> GetKeeps(string userId)
     {
-      return _db.Query<Keep>("SELECT * from keeps;");
+      return _db.Query<Keep>(@"
+      SELECT *
+      FROM keeps
+      WHERE userId=@userId OR isPrivate=0
+      ORDER BY id DESC
+      LIMIT 40;", new { userId });
+    }
+
+    //GET ADDITIONAL 40 KEEPS
+    //DO NOT RETURN PRIVATE KEEPS BY ANOTHER USER
+    public IEnumerable<Keep> GetMoreKeeps(int id, string userId)
+    {
+      return _db.Query<Keep>(@"
+      SELECT *
+      FROM keeps
+      WHERE id < @id AND (userId=@userId OR isPrivate=0)      
+      ORDER BY id DESC
+      LIMIT 40;", new { id, userId });
     }
 
     //GET KEEP BY ID
-    public Keep GetKeepById(int id)
+    public Keep GetById(int id)
     {
       return _db.Query<Keep>(@"
         SELECT * FROM keeps
@@ -30,27 +48,42 @@ namespace keepr.Repositories
     }
 
     //POST A NEW KEEP
-    public Keep CreateKeep(object keep)
+    public Keep Create(KeepForm keep)
     {
       int id = _db.ExecuteScalar<int>(@"
         INSERT INTO keeps (name, description, userId, img, isPrivate)
-        VALUES(@keep.name, @keep.description, @keep.userId, @keep.img, @keep.isPrivate);
-        SELECT LAST_INSERT_ID", keep);
+        VALUES(@Name, @Description, @UserId, @Img, @IsPrivate);
+        SELECT LAST_INSERT_ID();", keep);
       if (id == 0) return null;
-      return GetKeepById(id);
+
+      return GetById(id);
     }
+
     //EDIT A KEEP
-    public int UpdateKeep(Keep keep)
+    public int Update(Keep keep, string userId)
     {
-      return _db.Execute(@"
+      string sqlStmt;
+      //only the post author can edit all fields
+      if (keep.UserId == userId)
+      {
+        sqlStmt = @"
         UPDATE keeps
-        SET name=@Name, description@description, userId=@UserId, img=@Img, isPrivate=@IsPrivate,
+        SET name=@Name, description=@description, userId=@UserId, img=@Img, isPrivate=@IsPrivate,
         views=@Views, shares=@Shares, keeps=@Keeps
-        WHERE id=@Id;", keep);
+        WHERE id=@Id;";
+      }
+      else
+      {
+        sqlStmt = @"
+        UPDATE keeps
+        SET views=@Views, shares=@Shares, keeps=@Keeps
+        WHERE id=@Id;";
+      }
+      return _db.Execute(sqlStmt, keep);
     }
 
     //DELETE A KEEP
-    public int DeleteKeep(int id)
+    public int Delete(int id)
     {
       return _db.Execute("DELETE FROM keeps WHERE id = @id", new { id });
     }

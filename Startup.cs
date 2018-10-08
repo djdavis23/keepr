@@ -42,25 +42,26 @@ namespace keepr
           options.LoginPath = "/Account/Login";
           options.Events.OnRedirectToLogin = (context) =>
           {
-        context.Response.StatusCode = 401;
-        return Task.CompletedTask;
-      };
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+          };
         });
 
       services.AddCors(options =>
       {
         options.AddPolicy("CorsDevPolicy", builder =>
             {
-          builder
-          .AllowAnyOrigin()
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          .AllowCredentials();
-        });
+              builder
+              .AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+            });
       });
       services.AddMvc();
       services.AddTransient<IDbConnection>(x => CreateDBContext());
       services.AddTransient<UserRepository>();
+      services.AddTransient<KeepRepository>();
       // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
     }
 
@@ -91,10 +92,10 @@ namespace keepr
      {
        o.ForException<Exception>().ReturnStatusCode(401).UsingMessageFormatter((ex, ctx, task) =>
              {
-           ctx.Response.ContentType = "application/json";
-           ctx.Response.WriteAsync(ex.Message);
-           return Task.CompletedTask;
-         });
+               ctx.Response.ContentType = "application/json";
+               ctx.Response.WriteAsync(ex.Message);
+               return Task.CompletedTask;
+             });
      });
       app.UseMvc();
     }
