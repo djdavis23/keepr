@@ -1,6 +1,11 @@
 <template>
   <div id="app">
     <router-view />
+    <v-footer app color="blue accent-2">
+      <v-layout justify-end>
+        <h4 class="white--text" id="tagline"><i class="fas fa-at"></i>D2dev</h4>
+      </v-layout>
+    </v-footer>
   </div>
 </template>
 

@@ -22,7 +22,7 @@ namespace keepr.Repositories
       return _db.Query<Keep>(@"
       SELECT *
       FROM keeps
-      WHERE userId=@userId OR isPrivate=0
+      WHERE isPrivate=0 OR userId=@userId 
       ORDER BY id DESC
       LIMIT 40;", new { userId });
     }
@@ -34,7 +34,7 @@ namespace keepr.Repositories
       return _db.Query<Keep>(@"
       SELECT *
       FROM keeps
-      WHERE id < @id AND (userId=@userId OR isPrivate=0)      
+      WHERE id < @id AND (isPrivate=0 OR userId=@userId)      
       ORDER BY id DESC
       LIMIT 40;", new { id, userId });
     }

@@ -3,11 +3,13 @@ using keepr.Models;
 using keepr.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace keepr.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
+  [Authorize]
   public class VaultController : Controller
   {
     private VaultRepository _repo;

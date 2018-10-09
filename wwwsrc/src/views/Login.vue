@@ -1,67 +1,94 @@
 <template>
-    <v-layout row wrap class="header blue accent-2">
-        <v-flex xs12 sm6 justify-start>
-            <h1 class="mt-3 white--text font-weight-bold font-italic">UnPinterested</h1>
-        </v-flex>
-        <v-flex xs12 sm6 justify-end>
-            <v-btn round @click="loginForm = !loginForm" class="btn btn-secondary mb-3 mt-3">Login</v-btn>
-            <v-btn round @click="registerForm = !registerForm" class="btn btn-secondary ml-2 mb-3 mt-3">Register</v-btn>
-        </v-flex>
+  <div id="login">
+    <v-toolbar color="blue accent-2" class="white--text">
+      <v-toolbar-title><i class="fab fa-kickstarter"></i> KeeprD2</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn small flat dark @click="loginForm = !loginForm">Login</v-btn>
+        <v-btn small flat dark @click="registerForm = !registerForm">Register</v-btn>
+        <v-btn small flat dark @click="browseKeeps">Browse</v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
+    <v-container class="main" fluid grid-list-sm align-content-center>
+      <v-layout row wrap>
         <v-flex xs12 sm6 offset-sm3>
-            <v-card>
-                <form v-if="loginForm" @submit.prevent="loginUser">
-                    <input type="email" v-model="creds.email" placeholder="email">
-                    <input type="password" v-model="creds.password" placeholder="password">
-                    <v-btn round color="green accent-3" type="submit">Login</v-btn>
-                </form>
-            </v-card>
+          <v-card color="grey lighten-3">
+            <v-form v-if="loginForm" @submit.prevent="loginUser">
+              <v-text-field type="email" v-model="creds.email" label="Email" required><i class=" material-icons">email</i></v-text-field>
+              <v-text-field mb0 type="password" v-model="creds.password" label="Password" required></v-text-field>
+              <v-btn round small dark color="blue accent-2" type="submit">Login</v-btn>
+            </v-form>
+          </v-card>
         </v-flex>
         <v-flex xs12 sm10 offset-sm1>
-            <v-card>
-                <form v-if="registerForm" @submit.prevent="register">
-                    <input type="text" v-model="newUser.username" placeholder="name">
-                    <input type="email" v-model="newUser.email" placeholder="email">
-                    <input type="password" v-model="newUser.password" placeholder="password">
-                    <v-btn round color="green accent-3" type="submit">Register</v-btn>
-                </form>
-            </v-card>
+          <v-card color="grey lighten-3">
+            <v-form v-if="registerForm" @submit.prevent="register">
+              <v-text-field type="text" v-model="newUser.username" label="Username" required></v-text-field>
+              <v-text-field type="email" v-model="newUser.email" label="Email" required></v-text-field>
+              <v-text-field type="password" v-model="newUser.password" label="Password" required></v-text-field>
+              <v-btn round small dark color="blue accent-2" type="submit">Register</v-btn>
+            </v-form>
+          </v-card>
         </v-flex>
-    </v-layout>
+      </v-layout>
+      <v-layout row wrap>
+        <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" />
+      </v-layout>
+    </v-container>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "login",
-        mounted() {
-            //checks for valid session
-            this.$store.dispatch("authenticate");
-        },
-        data() {
-            return {
-                loginForm: false,
-                registerForm: false,
-                creds: {
-                    email: "",
-                    password: ""
-                },
-                newUser: {
-                    email: "",
-                    password: "",
-                    username: ""
-                }
-            };
-        },
-        methods: {
-            register() {
-                this.$store.dispatch("register", this.newUser);
-            },
-            loginUser() {
-                this.$store.dispatch("login", this.creds);
-            }
-        }
+  import KeepView from "@/components/KeepView.vue";
 
-    };
+  export default {
+    name: "login",
+    mounted() {
+      //checks for valid session
+      this.$store.dispatch("authenticate");
+    },
+
+    components: {
+      KeepView
+    },
+
+    data() {
+      return {
+        loginForm: false,
+        registerForm: false,
+        creds: {
+          email: "",
+          password: ""
+        },
+        newUser: {
+          email: "",
+          password: "",
+          username: ""
+        }
+      };
+    },
+
+    methods: {
+      register() {
+        this.$store.dispatch("register", this.newUser);
+      },
+      loginUser() {
+        this.$store.dispatch("login", this.creds);
+      },
+      browseKeeps() {
+        this.$store.dispatch("getKeeps");
+      }
+    },
+
+    computed: {
+      keeps() {
+        return this.$store.state.keeps;
+      },
+      userId() {
+        return this.$store.state.user.userId;
+      }
+    }
+  };
 </script>
 <style>
-
 </style>

@@ -3,6 +3,7 @@ using keepr.Models;
 using keepr.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace keepr.Controllers
 {
@@ -22,6 +23,7 @@ namespace keepr.Controllers
     public IEnumerable<Keep> Get()
     {
       string userId = HttpContext.User.Identity.Name;
+      if (userId == null) userId = "not-logged-in";
       return _repo.GetKeeps(userId);
     }
 
@@ -31,6 +33,7 @@ namespace keepr.Controllers
     public IEnumerable<Keep> Get([FromRoute] int id)
     {
       string userId = HttpContext.User.Identity.Name;
+      if (userId == null) userId = "not-logged-in";
       return _repo.GetMoreKeeps(id, userId);
     }
 
@@ -43,6 +46,7 @@ namespace keepr.Controllers
 
     //CREATE NEW KEEP
     [HttpPost]
+    [Authorize]
     public Keep Post([FromBody] KeepForm keep)
     {
       if (ModelState.IsValid)
@@ -54,6 +58,7 @@ namespace keepr.Controllers
 
     //EDIT KEEP    
     [HttpPut]
+    [Authorize]
     public void Put([FromBody] Keep keep)
     {
       string userId = HttpContext.User.Identity.Name;
@@ -63,6 +68,7 @@ namespace keepr.Controllers
     //DELETE A KEEP
     //Can only delete your own private posts
     [HttpDelete]
+    [Authorize]
     public void Delete([FromBody] Keep keep)
     {
       if (keep.UserId == HttpContext.User.Identity.Name && keep.IsPrivate == 0)
