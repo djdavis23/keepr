@@ -39,7 +39,12 @@ export default new Vuex.Store({
     //KEEP MUTATIONS
     setKeeps(state, keeps) {
       state.keeps = keeps;
+    },
+
+    addKeep(state, keep) {
+      state.keeps.unshift(keep);
     }
+
   },
 
   actions: {
@@ -93,6 +98,14 @@ export default new Vuex.Store({
           commit("setKeeps", res.data)
         })
         .catch(err => (console.error(err)))
+    },
+    createKeep({ commit }, keep) {
+      api.post("Keep", keep)
+        .then(res => {
+          console.log("new keep ", res.data)
+          commit("addKeep", res.data)
+        })
+        .catch(err => console.error(err))
     }
   }
 })

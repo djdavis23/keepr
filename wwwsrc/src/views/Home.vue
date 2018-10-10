@@ -20,8 +20,8 @@
                   <v-text-field v-model="newKeep.Name" label="Name" required><i class=" material-icons">email</i></v-text-field>
                   <v-text-field v-model="newKeep.Description" label="Description" required></v-text-field>
                   <v-text-field v-model="newKeep.Img" label="Image URL" required></v-text-field>
-                  <v-checkbox v-model="newKeep.IsPrivate" label="Private Keep?" value=1 required></v-checkbox>
-                  <v-btn round small dark color="blue accent-2" type="submit">Create</v-btn>
+                  <v-checkbox v-model="newKeep.IsPrivate" label="Private Keep?" value="1" required></v-checkbox>
+                  <v-btn round small dark color="blue accent-2" type="submit">Create Keep</v-btn>
                 </v-form>
               </v-card>
             </v-flex>
@@ -60,7 +60,7 @@
           Description: "",
           UserId: "",
           Img: "",
-          isPrivate: 0
+          IsPrivate: 0
         }
       }
     },
@@ -74,8 +74,18 @@
         this.$store.dispatch('logout')
       },
       createKeep() {
-        this.newKeep.UserId = this.user.userId;
+        this.newKeep.UserId = this.user.id;
+        this.newKeep.IsPrivate = parseInt(this.newKeep.IsPrivate)
+        console.log(this.newKeep)
         this.$store.dispatch('createKeep', this.newKeep)
+        this.newKeep = {
+          Name: "",
+          Description: "",
+          UserId: "",
+          Img: "",
+          IsPrivate: 0
+        }
+        this.keepForm = false;
       },
     },
 
