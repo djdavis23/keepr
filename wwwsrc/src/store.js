@@ -115,8 +115,16 @@ export default new Vuex.Store({
         .catch(err => console.error(err))
     },
 
+    deleteKeep({ dispatch }, keep) {
+      api.delete("Keep", { data: keep })
+        .then(res => {
+          dispatch('getKeeps')
+        })
+        .catch(err => console.error(err))
+    },
+
     //VAULT ACTIONS
-    getVaults({ commit, dispatch, state }) {
+    getVaults({ commit }) {
       api.get('Vault')
         .then(res => {
           commit('setVaults', res.data)
@@ -124,12 +132,21 @@ export default new Vuex.Store({
         .catch(err => console.error(err))
     },
 
-    addVault({ commit, dispatch }, vault) {
+    addVault({ commit }, vault) {
       api.post("vault", vault)
         .then(res => {
           commit("addVault", res.data)
         })
         .catch(err => console.error(err))
+    },
+
+    deleteVault({ dispatch }, vault) {
+      api.delete("Vault", { data: vault })
+        .then(res => {
+          dispatch("getVaults")
+        })
+        .catch(err => console.log(err))
+
     }
 
   }

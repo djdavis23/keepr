@@ -6,10 +6,15 @@
         <div slot="header">{{vault.name}}</div>
         <v-card>
           <v-card-text>{{vault.description}}</v-card-text>
+          <v-card-actions class="grey lighten-3" id="action-bar">
+            <v-btn small fab flat color="purple accent-2"><i class="material-icons">expand_more</i></v-btn>
+            <v-btn small fab flat color="purple accent-2"><i class="material-icons">expand_less</i></v-btn>
+            <v-btn @click="deleteVault(vault)" small fab flat color="purple accent-2"><i class="material-icons">delete_forever</i></v-btn>
+          </v-card-actions>
         </v-card>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    <h3><i class="material-icons" @click="vaultForm=!vaultForm">add_circle</i></h3>
+    <h3><i class="material-icons clickable" @click="vaultForm=!vaultForm">add_circle</i></h3>
     <v-card v-if="vaultForm" color="grey lighten-3">
       <v-card-title>Add New Vault:</v-card-title>
       <v-form @submit.prevent="createVault">
@@ -50,6 +55,10 @@
           UserId: ""
         }
         this.vaultForm = false;
+      },
+
+      deleteVault(vault) {
+        this.$store.dispatch('deleteVault', { Id: vault.id, UserId: vault.userId })
       }
     },
 
@@ -62,7 +71,7 @@
   }
 </script>
 <style>
-  .blue-text {
-    color: #448AFF;
+  .clickable:hover {
+    cursor: pointer;
   }
 </style>

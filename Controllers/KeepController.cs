@@ -69,9 +69,9 @@ namespace keepr.Controllers
     //Can only delete your own private posts
     [HttpDelete]
     [Authorize]
-    public void Delete([FromBody] Keep keep)
+    public void Delete([FromBody] KeepDiscard keep)
     {
-      if (keep.UserId == HttpContext.User.Identity.Name && keep.IsPrivate == 0)
+      if (keep.UserId == HttpContext.User.Identity.Name && keep.IsPrivate == 1)
       {
         _repo.Delete(keep.Id);
       }

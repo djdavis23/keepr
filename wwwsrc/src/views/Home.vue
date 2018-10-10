@@ -24,14 +24,14 @@
                   <v-text-field v-model="newKeep.Name" label="Name" required><i class=" material-icons">email</i></v-text-field>
                   <v-text-field v-model="newKeep.Description" label="Description" required></v-text-field>
                   <v-text-field v-model="newKeep.Img" label="Image URL" required></v-text-field>
-                  <v-checkbox v-model="newKeep.IsPrivate" label="Private Keep?" value="1" required></v-checkbox>
+                  <v-checkbox v-model="newKeep.IsPrivate" label="Make keep public?" value="0" required></v-checkbox>
                   <v-btn round small dark color="blue accent-2" type="submit">Create Keep</v-btn>
                 </v-form>
               </v-card>
             </v-flex>
           </v-layout>
           <v-layout row wrap>
-            <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" />
+            <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" :user="user" />
           </v-layout>
         </v-flex>
       </v-layout>
@@ -66,7 +66,7 @@
           Description: "",
           UserId: "",
           Img: "",
-          IsPrivate: 0
+          IsPrivate: 1
         }
       }
     },

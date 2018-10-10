@@ -58,7 +58,7 @@ namespace keepr.Controllers
 
     //DELETE A VAULT    
     [HttpDelete]
-    public void Delete([FromBody] Vault vault)
+    public void Delete([FromBody] VaultDiscard vault)
     {
       if (vault.UserId == HttpContext.User.Identity.Name)
       {

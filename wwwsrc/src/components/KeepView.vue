@@ -16,7 +16,9 @@
       <v-card-actions class="grey lighten-3" id="action-bar">
         <v-btn small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
         <v-btn small fab flat color="purple accent-2"><i class="material-icons">add_circle</i></v-btn>
-        <v-btn small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
+        <v-btn v-if="keep.isPrivate" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
+        <v-btn v-if="user.id==keep.userId && keep.isPrivate==1" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i
+            class="material-icons">delete_forever</i></v-btn>
       </v-card-actions>
     </v-card>
   </v-flex>
@@ -27,9 +29,14 @@
     name: "KeepView",
     data() {
       return {};
+
     },
-    props: ["keep"],
-    methods: {},
+    props: ["keep", "user"],
+    methods: {
+      deleteKeep(keep) {
+        this.$store.dispatch('deleteKeep', { Id: keep.id, UserId: keep.userId, IsPrivate: keep.isPrivate });
+      }
+    },
     computed: {}
   };
 </script>
