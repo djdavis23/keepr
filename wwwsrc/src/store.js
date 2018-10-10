@@ -43,6 +43,15 @@ export default new Vuex.Store({
 
     addKeep(state, keep) {
       state.keeps.unshift(keep);
+    },
+
+    //VAULT MUTATIONS
+    setVaults(state, vaults) {
+      state.vaults = vaults;
+    },
+
+    addVault(state, vault) {
+      state.vaults.unshift(vault);
     }
 
   },
@@ -94,7 +103,6 @@ export default new Vuex.Store({
     getKeeps({ commit }) {
       api.get("Keep")
         .then(res => {
-          console.log("keeps: ", res.data)
           commit("setKeeps", res.data)
         })
         .catch(err => (console.error(err)))
@@ -102,10 +110,27 @@ export default new Vuex.Store({
     createKeep({ commit }, keep) {
       api.post("Keep", keep)
         .then(res => {
-          console.log("new keep ", res.data)
           commit("addKeep", res.data)
         })
         .catch(err => console.error(err))
+    },
+
+    //VAULT ACTIONS
+    getVaults({ commit, dispatch, state }) {
+      api.get('Vault')
+        .then(res => {
+          commit('setVaults', res.data)
+        })
+        .catch(err => console.error(err))
+    },
+
+    addVault({ commit, dispatch }, vault) {
+      api.post("vault", vault)
+        .then(res => {
+          commit("addVault", res.data)
+        })
+        .catch(err => console.error(err))
     }
+
   }
 })

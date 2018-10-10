@@ -1,17 +1,21 @@
 <template>
   <div id="login">
-    <v-toolbar color="blue accent-2" class="white--text">
+    <v-toolbar fixed color="blue accent-2" class="white--text">
       <v-toolbar-title><i class="fab fa-kickstarter"></i> {{user.username}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items id="tool-bar">
-        <v-text-field dark prepend-icon="fas fa-search"><i class="fas fa-search"></i></v-text-field>
+        <v-form @submit="searchKeeps">
+          <v-text-field clearable dark prepend-icon="fas fa-search"><i class="fas fa-search"></i></v-text-field>
+        </v-form>
         <v-btn dark small fab flat @click="keepForm=!keepForm"><i class="material-icons">add_circle</i></v-btn>
         <v-btn small flat dark @click="logout">Logout</v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <v-container fluid grid-list-sm align-content-center>
+    <v-container fluid mt-5 mb-4 grid-list-sm align-content-center>
       <v-layout row wrap>
-        <v-flex xs12 md3></v-flex>
+        <v-flex xs12 md3>
+          <Vaults :user="user" />
+        </v-flex>
         <v-flex xs12 md9>
           <v-layout>
             <v-flex xs12 md8 offset-md2>
@@ -39,6 +43,7 @@
 <script>
 
   import KeepView from "@/components/KeepView.vue";
+  import Vaults from "@/components/Vaults.vue";
 
   export default {
     name: "home",
@@ -49,6 +54,7 @@
       }
       else {
         this.$store.dispatch('getKeeps');
+        this.$store.dispatch('getVaults');
       }
     },
 
@@ -66,7 +72,8 @@
     },
 
     components: {
-      KeepView
+      KeepView,
+      Vaults
     },
 
     methods: {
@@ -87,6 +94,10 @@
         }
         this.keepForm = false;
       },
+
+      searchKeeps() {
+        alert("This feature coming soon!")
+      }
     },
 
     computed: {
