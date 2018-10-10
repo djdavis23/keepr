@@ -3,12 +3,27 @@
     <h3>My Vaults</h3>
     <v-expansion-panel popout>
       <v-expansion-panel-content v-for="vault in vaults" :key="vault.id">
-        <div slot="header">{{vault.name}}</div>
+        <div slot="header" class="blue--text">{{vault.name}}</div>
         <v-card>
+          <hr />
           <v-card-text>{{vault.description}}</v-card-text>
           <v-card-actions class="grey lighten-3" id="action-bar">
-            <v-btn small fab flat color="purple accent-2"><i class="material-icons">expand_more</i></v-btn>
-            <v-btn small fab flat color="purple accent-2"><i class="material-icons">expand_less</i></v-btn>
+            <!-- dialog window to view keeps within a vault -->
+            <v-dialog v-model="dialog" width="700">
+              <v-btn slot="activator" small fab flat color="purple accent-2"><i class="material-icons">expand_more</i></v-btn>
+              <v-card>
+                <v-card-title primary-title class="blue accent-2 white--text">
+                  <h2>{{vault.name}}</h2>
+                </v-card-title>
+                <v-card-text>
+                  <h2>KEEPS GO HERE!!</h2>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn small round color="blue accent-2" class="white--text" @click="dialog=false">Close Vault</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
             <v-btn @click="deleteVault(vault)" small fab flat color="purple accent-2"><i class="material-icons">delete_forever</i></v-btn>
           </v-card-actions>
         </v-card>
@@ -31,11 +46,12 @@
   export default {
     name: 'Vaults',
 
-    props: ['user'],
+    props: ['user', 'vaults'],
 
     data() {
       return {
         vaultForm: false,
+        dialog: false,
         newVault: {
           Name: "",
           Description: "",
@@ -62,11 +78,7 @@
       }
     },
 
-    computed: {
-      vaults() {
-        return this.$store.state.vaults;
-      }
-    }
+    computed: {}
 
   }
 </script>

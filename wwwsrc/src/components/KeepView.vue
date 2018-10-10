@@ -15,7 +15,14 @@
       </v-card-title>
       <v-card-actions class="grey lighten-3" id="action-bar">
         <v-btn small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
-        <v-btn small fab flat color="purple accent-2"><i class="material-icons">add_circle</i></v-btn>
+        <v-menu offset-y>
+          <v-btn slot="activator" small fab flat color="purple accent-2"><i class="material-icons">add_circle</i></v-btn>
+          <v-list>
+            <v-list-tile v-for="vault in vaults" :key="vault.id" @click="addKeepToVault(keep.id, vault.id)">
+              <v-list-tile-title>{{vault.name}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
         <v-btn v-if="keep.isPrivate" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
         <v-btn v-if="user.id==keep.userId && keep.isPrivate==1" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i
             class="material-icons">delete_forever</i></v-btn>
@@ -31,10 +38,14 @@
       return {};
 
     },
-    props: ["keep", "user"],
+    props: ["keep", "user", "vaults"],
     methods: {
       deleteKeep(keep) {
         this.$store.dispatch('deleteKeep', { Id: keep.id, UserId: keep.userId, IsPrivate: keep.isPrivate });
+      },
+
+      addKeepToVault(keepId, vaultId) {
+        this.$store.dispatch("addKeepToVault", { VaultId: vaultId, KeepId: keepId, UserId: this.user.id })
       }
     },
     computed: {}

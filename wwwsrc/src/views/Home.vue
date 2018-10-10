@@ -14,7 +14,7 @@
     <v-container fluid mt-5 mb-4 grid-list-sm align-content-center>
       <v-layout row wrap>
         <v-flex xs12 md3>
-          <Vaults :user="user" />
+          <Vaults :user="user" :vaults="vaults" />
         </v-flex>
         <v-flex xs12 md9>
           <v-layout>
@@ -31,7 +31,7 @@
             </v-flex>
           </v-layout>
           <v-layout row wrap>
-            <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" :user="user" />
+            <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" :user="user" :vaults="vaults" />
           </v-layout>
         </v-flex>
       </v-layout>
@@ -106,6 +106,9 @@
       },
       keeps() {
         return this.$store.state.keeps
+      },
+      vaults() {
+        return this.$store.state.vaults
       }
 
     }
