@@ -22,7 +22,9 @@ export default new Vuex.Store({
     user: {},
     keeps: [],
     vaults: [],
-    vaultKeeps: {}
+    vaultKeeps: {},
+    activeVaultId: "",
+    activeVaultKeeps: []
   },
   mutations: {
 
@@ -34,6 +36,7 @@ export default new Vuex.Store({
       state.user = {}
       state.keeps = [];
       state.vaults = [];
+      state.vaultKeeps = {};
       router.push('login')
     },
 
@@ -48,6 +51,10 @@ export default new Vuex.Store({
 
     //VAULT MUTATIONS
     setVaults(state, vaults) {
+      vaults.forEach(vault => {
+        vault.keeps = []
+        vault.dialog = false
+      })
       state.vaults = vaults;
     },
 
@@ -63,9 +70,33 @@ export default new Vuex.Store({
         }
         else {
           let tempArr = state.vaultKeeps[vk.vaultId]
+          tempArr.push(vk.keepId)
           Vue.set(state.vaultKeeps, vk.vaultId, tempArr)
         }
       })
+    },
+
+    addVaultKeep(state, vk) {
+      if (!state.vaultKeeps[vk.vaultId]) {
+        Vue.set(state.vaultKeeps, vk.vaultId, [vk.keepId])
+      }
+      else {
+        let tempArr = state.vaultKeeps[vk.vaultId]
+        tempArr.push(vk.keepId)
+        Vue.set(state.vaultKeeps, vk.vaultId, tempArr)
+      }
+      if (state.activeVaultId == vk.vaultId) {
+        state.activeVaultKeeps.push(state.keeps.find(keep => keep.id == vk.keepId))
+      }
+    },
+
+    setActiveVault(state, vaultId) {
+      state.activeVaultId = vaultId;
+      let tempArr = []
+      state.vaultKeeps[vaultId].forEach(keepId => {
+        tempArr.push(state.keeps.find(keep => keep.id == keepId))
+      })
+      state.activeVaultKeeps = tempArr
     }
 
 
@@ -175,12 +206,23 @@ export default new Vuex.Store({
         .catch(err => console.error(err))
     },
 
-    addKeepToVault({ commit }, vaultKeep) {
-      api.post("VaultKeep", vaultKeep)
-        .then(res => {
-          console.log("vault-keep: ", JSON.parse(JSON.stringify(res.data)))
-        })
-        .catch(err => console.error(err))
+    addKeepToVault({ commit, state }, vaultKeep) {
+      //don't add a duplicate keep to a vault
+      if (state.vaultKeeps[vaultKeep.VaultId].includes(vaultKeep.KeepId)) {
+        alert("This keep is already in the selected vault.")
+      }
+      else {
+        api.post("VaultKeep", vaultKeep)
+          .then(res => {
+            console.log("vault-keep: ", JSON.parse(JSON.stringify(res.data)))
+            commit("addVaultKeep", res.data)
+          })
+          .catch(err => console.error(err))
+      }
+    },
+
+    setActiveVault({ commit }, vaultId) {
+      commit('setActiveVault', vaultId)
     }
 
   }

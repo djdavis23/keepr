@@ -55,6 +55,7 @@
       else {
         this.$store.dispatch('getKeeps');
         this.$store.dispatch('getVaults');
+        this.$store.dispatch('getVaultKeeps');
       }
     },
 

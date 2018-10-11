@@ -8,22 +8,20 @@
           <hr />
           <v-card-text>{{vault.description}}</v-card-text>
           <v-card-actions class="grey lighten-3" id="action-bar">
+
             <!-- dialog window to view keeps within a vault -->
-            <v-dialog v-model="dialog" width="700">
-              <v-btn slot="activator" small fab flat color="purple accent-2"><i class="material-icons">expand_more</i></v-btn>
+            <v-dialog v-model="vault.dialog" width="700">
+              <v-btn slot="activator" @click="setActiveVault(vault.id)" small fab flat color="purple accent-2"><i class="material-icons">expand_more</i></v-btn>
               <v-card>
                 <v-card-title primary-title class="blue accent-2 white--text">
                   <h2>{{vault.name}}</h2>
+                  <v-spacer></v-spacer><i @click="dialog = false" class="material-icons clickable">close</i>
                 </v-card-title>
                 <v-card-text>
                   <h2>KEEPS GO HERE!!</h2>
                 </v-card-text>
-                <v-card-actions>
-                  <v-btn small round color="blue accent-2" class="white--text" @click="dialog=false">Close Vault</v-btn>
-                </v-card-actions>
               </v-card>
             </v-dialog>
-
             <v-btn @click="deleteVault(vault)" small fab flat color="purple accent-2"><i class="material-icons">delete_forever</i></v-btn>
           </v-card-actions>
         </v-card>
@@ -51,7 +49,6 @@
     data() {
       return {
         vaultForm: false,
-        dialog: false,
         newVault: {
           Name: "",
           Description: "",
@@ -75,10 +72,26 @@
 
       deleteVault(vault) {
         this.$store.dispatch('deleteVault', { Id: vault.id, UserId: vault.userId })
+      },
+
+      setActiveVault(vaultId) {
+        if (this.activeVaultId == vaultId) { return }
+        this.activeVaultId = vaultId
+        this.$store.dispatch("setActiveVault", vaultId)
+
       }
     },
 
-    computed: {}
+    computed: {
+      vaultKeeps() {
+        return this.$store.state.activeVaultKeeps
+      },
+
+      activeVaultId() {
+        return this.$store.state.activeVaultId
+      }
+
+    }
 
   }
 </script>
