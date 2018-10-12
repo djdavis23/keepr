@@ -4,20 +4,22 @@
       <v-toolbar-title><i class="fab fa-kickstarter"></i> KeeprD2</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn small flat dark @click="loginForm = !loginForm; registerForm=false; action=!action">Login</v-btn>
-        <v-btn small flat dark @click="registerForm = !registerForm; loginForm=false; action=!action">Register</v-btn>
+        <v-btn small flat dark @click="loginForm = !loginForm; registerForm=false">Login</v-btn>
+        <v-btn small flat dark @click="registerForm = !registerForm; loginForm=false">Register</v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <v-container fluid grid-list-sm align-content-center v-if="!action" class="main">
+
+    <!-- Welcome screen -->
+    <v-container fluid grid-list-sm align-content-center v-if="(!loginForm && !registerForm && !browsing)" class="main">
       <v-layout row wrap>
         <v-flex xs12 sm6 offset-sm3>
           <v-card class="mt-5" color="grey lighten-3">
             <v-toolbar color="blue accent-2" class="white--text">
               <v-toolbar-title><i class="fab fa-kickstarter"></i> KeeprD2</v-toolbar-title>
             </v-toolbar>
-            <v-card-media>
+            <v-responsive>
               <v-img src="../assets/social-media-logos.jpg"></v-img>
-            </v-card-media>
+            </v-responsive>
             <v-toolbar color="blue accent-2" class="white--text action-bar">
               <v-toolbar-items>
                 <v-btn small flat dark @click="browseKeeps">Browse as a guest</v-btn>
@@ -28,6 +30,7 @@
       </v-layout>
     </v-container>
 
+    <!-- Login and register forms -->
     <v-container fluid grid-list-sm align-content-center class="main">
       <v-layout row wrap>
         <v-flex xs12 sm6 offset-sm3>
@@ -57,8 +60,25 @@
           </v-card>
         </v-flex>
       </v-layout>
-      <v-layout row wrap>
-        <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" />
+
+      <!-- Browse area -->
+      <v-layout row wrap v-if="browsing">
+        <v-flex xs12 sm6 md3 v-for="keep in keeps" :key="keep.id" :keep="keep">
+          <v-card>
+            <v-img :src="keep.img"></v-img>
+            <v-card-text class="grey lighten-3">
+              <i class="fas fa-thumbs-up"></i> {{keep.views}}&nbsp&nbsp&nbsp&nbsp
+              <i class="fas fa-plus-circle"></i> {{keep.keeps}}&nbsp&nbsp&nbsp&nbsp
+              <i class="fas fa-share-alt"></i> {{keep.shares}}
+            </v-card-text>
+            <v-card-title primary-title>
+              <div class="text-box">
+                <h3 class="headline mb-0">{{keep.name}}</h3>
+                <div>{{keep.description}}</div>
+              </div>
+            </v-card-title>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-container>
 
@@ -81,7 +101,8 @@
 
     data() {
       return {
-        action: false,
+
+        browsing: false,
         loginForm: false,
         registerForm: false,
         creds: {
@@ -125,7 +146,7 @@
       },
       browseKeeps() {
         this.$store.dispatch("getKeeps");
-        this.action = true;
+        this.browsing = true;
       }
     },
 
