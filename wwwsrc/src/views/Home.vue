@@ -22,8 +22,11 @@
         <v-flex xs12 md9>
           <v-layout>
             <v-flex xs12 md8 offset-md2>
-              <v-card color="grey lighten-3">
-                <v-form v-if="keepForm" ref="form" v-model="valid" @submit.prevent="createKeep">
+              <v-card v-if="keepForm" color="grey lighten-3">
+                <v-toolbar class="grey darken-3 white--text">
+                  <v-toolbar-title>Add a new keep:</v-toolbar-title>
+                </v-toolbar>
+                <v-form ref="form" v-model="valid" @submit.prevent="createKeep" class="ml-5 mr-5">
                   <v-text-field counter=30 :rules="nameRules" v-model="newKeep.Name" label="Name" required><i class=" material-icons">email</i></v-text-field>
                   <v-text-field counter=255 :rules="descriptionRules" v-model="newKeep.Description" label="Description"
                     required></v-text-field>

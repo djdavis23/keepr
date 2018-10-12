@@ -34,7 +34,9 @@
       <span>Add New Vault</span>
     </v-tooltip>
     <v-card v-if="vaultForm" color="grey lighten-3">
-      <v-card-title class="blue--text">Add New Vault:</v-card-title>
+      <v-toolbar class="grey darken-3 white--text">
+        <v-toolbar-title>Add New Vault:</v-toolbar-title>
+      </v-toolbar>
       <v-form class="mr-5 ml-5" ref="vform" v-model="vvalid" @submit.prevent="createVault">
         <v-text-field counter=30 v-model="newVault.Name" :rules="nameRules" label="Name" required></v-text-field>
         <v-text-field counter=255 v-model="newVault.Description" :rules="descriptionRules" label="Description" required></v-text-field>
