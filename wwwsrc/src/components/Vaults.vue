@@ -15,11 +15,13 @@
               <v-card>
                 <v-card-title primary-title class="blue accent-2 white--text">
                   <h2>{{vault.name}}</h2>
-                  <v-spacer></v-spacer><i @click="dialog = false" class="material-icons clickable">close</i>
+                  <v-spacer></v-spacer><i @click="vault.dialog = false" class="material-icons clickable">close</i>
                 </v-card-title>
-                <v-card-text>
-                  <h2>KEEPS GO HERE!!</h2>
-                </v-card-text>
+                <v-container grid-list-sm>
+                  <v-layout row wrap justify-center>
+                    <VKView v-for="keep in vaultKeeps" :key=keep.id :keep="keep" :user="user" :activeVaultId="activeVaultId" />
+                  </v-layout>
+                </v-container>
               </v-card>
             </v-dialog>
             <v-btn @click="deleteVault(vault)" small fab flat color="purple accent-2"><i class="material-icons">delete_forever</i></v-btn>
@@ -41,10 +43,16 @@
 
 <script>
 
+  import VKView from './VKView.vue';
+
   export default {
     name: 'Vaults',
 
     props: ['user', 'vaults'],
+
+    components: {
+      VKView
+    },
 
     data() {
       return {
@@ -76,7 +84,6 @@
 
       setActiveVault(vaultId) {
         if (this.activeVaultId == vaultId) { return }
-        this.activeVaultId = vaultId
         this.$store.dispatch("setActiveVault", vaultId)
 
       }

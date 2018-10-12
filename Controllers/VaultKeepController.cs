@@ -45,7 +45,7 @@ namespace keepr.Controllers
 
     //DELETE A VAULTKEEP    
     [HttpDelete]
-    public void Delete([FromBody] VaultKeep vk)
+    public void Delete([FromBody] VaultKeepDiscard vk)
     {
       if (vk.UserId == HttpContext.User.Identity.Name)
       {

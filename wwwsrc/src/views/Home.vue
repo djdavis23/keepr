@@ -20,12 +20,13 @@
           <v-layout>
             <v-flex xs12 md8 offset-md2>
               <v-card color="grey lighten-3">
-                <v-form v-if="keepForm" @submit.prevent="createKeep">
-                  <v-text-field v-model="newKeep.Name" label="Name" required><i class=" material-icons">email</i></v-text-field>
-                  <v-text-field v-model="newKeep.Description" label="Description" required></v-text-field>
-                  <v-text-field v-model="newKeep.Img" label="Image URL" required></v-text-field>
+                <v-form v-if="keepForm" ref="form" v-model="valid" @submit.prevent="createKeep">
+                  <v-text-field counter=30 :rules="nameRules" v-model="newKeep.Name" label="Name" required><i class=" material-icons">email</i></v-text-field>
+                  <v-text-field counter=255 :rules="descriptionRules" v-model="newKeep.Description" label="Description"
+                    required></v-text-field>
+                  <v-text-field counter=255 :rules="imgRules" v-model="newKeep.Img" label="Image URL" required></v-text-field>
                   <v-checkbox v-model="newKeep.IsPrivate" label="Make keep public?" value="0" required></v-checkbox>
-                  <v-btn round small dark color="blue accent-2" type="submit">Create Keep</v-btn>
+                  <v-btn round small dark color="blue accent-2" :disabled="!valid" type="submit">Create Keep</v-btn>
                 </v-form>
               </v-card>
             </v-flex>
@@ -68,7 +69,18 @@
           UserId: "",
           Img: "",
           IsPrivate: 1
-        }
+        },
+        nameRules: [
+          v => !!v || "Name is required",
+          v => (v && v.length <= 30) || "Name cannot exceed 30 characters"
+        ],
+        descriptionRules: [
+          v => (v && v.length <= 255) || "Description cannot exceed 255 characters"
+        ],
+        imgRules: [
+          v => (v.length <= 255) || "Image URL cannot exceed 255 characters"
+        ],
+        valid: true
       }
     },
 
@@ -82,18 +94,20 @@
         this.$store.dispatch('logout')
       },
       createKeep() {
-        this.newKeep.UserId = this.user.id;
-        this.newKeep.IsPrivate = parseInt(this.newKeep.IsPrivate)
-        console.log(this.newKeep)
-        this.$store.dispatch('createKeep', this.newKeep)
-        this.newKeep = {
-          Name: "",
-          Description: "",
-          UserId: "",
-          Img: "",
-          IsPrivate: 0
+        if (this.$refs.form.validate()) {
+          this.newKeep.UserId = this.user.id;
+          this.newKeep.IsPrivate = parseInt(this.newKeep.IsPrivate)
+          console.log(this.newKeep)
+          this.$store.dispatch('createKeep', this.newKeep)
+          this.newKeep = {
+            Name: "",
+            Description: "",
+            UserId: "",
+            Img: "",
+            IsPrivate: 1
+          }
+          this.keepForm = false;
         }
-        this.keepForm = false;
       },
 
       searchKeeps() {

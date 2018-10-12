@@ -15,4 +15,16 @@ namespace keepr.Models
     [Required]
     public string UserId { get; set; }
   }
+
+  public class VaultKeepDiscard
+  {
+    [Required]
+    public int VaultId { get; set; }
+
+    [Required]
+    public int KeepId { get; set; }
+
+    [Required]
+    public string UserId { get; set; }
+  }
 }

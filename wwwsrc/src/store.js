@@ -62,6 +62,11 @@ export default new Vuex.Store({
       state.vaults.unshift(vault);
     },
 
+    setActiveVaultId(state, vaultId) {
+      state.activeVaultId = vaultId
+    },
+
+
     //VAULT-KEEP MUTATIONS
     setVaultKeeps(state, vaultKeeps) {
       vaultKeeps.forEach(vk => {
@@ -76,7 +81,22 @@ export default new Vuex.Store({
       })
     },
 
+    setActiveVaultKeeps(state, vaultId) {
+      let tempArr = []
+      if (!state.vaultKeeps[vaultId]) { state.activeVaultKeeps = [] }
+      state.vaultKeeps[vaultId].forEach(keepId => {
+        tempArr.push(state.keeps.find(keep => keep.id == keepId))
+      })
+      state.activeVaultKeeps = tempArr
+    },
+
+    updateActiveVaultKeeps(state, keep) {
+      let index = state.activeVaultKeeps.findIndex(vkeep => vkeep.id == keep.id)
+      if (index > -1) { state.activeVaultKeeps[index] = keep }
+    },
+
     addVaultKeep(state, vk) {
+      //update vaultkeeps dictionary
       if (!state.vaultKeeps[vk.vaultId]) {
         Vue.set(state.vaultKeeps, vk.vaultId, [vk.keepId])
       }
@@ -85,21 +105,22 @@ export default new Vuex.Store({
         tempArr.push(vk.keepId)
         Vue.set(state.vaultKeeps, vk.vaultId, tempArr)
       }
+      //update activeVaultKeeps array as appropriate
       if (state.activeVaultId == vk.vaultId) {
         state.activeVaultKeeps.push(state.keeps.find(keep => keep.id == vk.keepId))
       }
     },
 
-    setActiveVault(state, vaultId) {
-      state.activeVaultId = vaultId;
-      let tempArr = []
-      state.vaultKeeps[vaultId].forEach(keepId => {
-        tempArr.push(state.keeps.find(keep => keep.id == keepId))
-      })
-      state.activeVaultKeeps = tempArr
+    removeVaultKeep(state, vk) {
+      //update vaultkeeps dictionary
+      let tempArr = state.vaultKeeps[vk.VaultId].filter(keepId => keepId != vk.KeepId)
+      Vue.set(state.vaultKeeps, vk.VaultId, tempArr)
+
+      //update activeVaultKeeps array
+      if (state.activeVaultId == vk.VaultId) {
+        state.activeVaultKeeps = state.activeVaultKeeps.filter(keep => keep.id != vk.KeepId)
+      }
     }
-
-
   },
 
   actions: {
@@ -169,6 +190,14 @@ export default new Vuex.Store({
         .catch(err => console.error(err))
     },
 
+    updateKeep({ commit, dispatch }, keep) {
+      api.put("Keep", keep)
+        .then(res => {
+          dispatch('getKeeps')
+          commit('updateActiveVaultKeeps', keep)
+        })
+        .catch(err => console.log(err))
+    },
     //VAULT ACTIONS
     getVaults({ commit }) {
       api.get('Vault')
@@ -195,6 +224,11 @@ export default new Vuex.Store({
 
     },
 
+    setActiveVault({ commit }, vaultId) {
+      commit('setActiveVaultId', vaultId)
+      commit('setActiveVaultKeeps', vaultId)
+    },
+
     //VAULT-KEEP ACTIONS
 
     getVaultKeeps({ commit }) {
@@ -206,24 +240,33 @@ export default new Vuex.Store({
         .catch(err => console.error(err))
     },
 
-    addKeepToVault({ commit, state }, vaultKeep) {
+    addKeepToVault({ commit, dispatch, state }, vkUpdate) {
+      let vaultKeep = vkUpdate.vaultAdd
+      let keep = vkUpdate.keepUpdate
       //don't add a duplicate keep to a vault
-      if (state.vaultKeeps[vaultKeep.VaultId].includes(vaultKeep.KeepId)) {
+      if (state.vaultKeeps[vaultKeep.VaultId] && state.vaultKeeps[vaultKeep.VaultId].includes(vaultKeep.KeepId)) {
         alert("This keep is already in the selected vault.")
       }
       else {
+        keep.keeps++
         api.post("VaultKeep", vaultKeep)
           .then(res => {
-            console.log("vault-keep: ", JSON.parse(JSON.stringify(res.data)))
+            dispatch('updateKeep', keep)
             commit("addVaultKeep", res.data)
           })
           .catch(err => console.error(err))
       }
     },
 
-    setActiveVault({ commit }, vaultId) {
-      commit('setActiveVault', vaultId)
+    removeKeepFromVault({ commit }, vaultKeep) {
+      api.delete("VaultKeep", { data: vaultKeep })
+        .then(res => {
+          commit("removeVaultKeep", vaultKeep)
+        })
+        .catch(err => console.error(err));
     }
+
+
 
   }
 })

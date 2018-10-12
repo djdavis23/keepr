@@ -15,19 +15,21 @@ namespace keepr.Repositories
       _db = db;
     }
 
-    //GET 40 MOST RECENT KEEPS
+    //GET KEEPS BY USER ID
     //DO NOT RETURN PRIVATE KEEPS BY ANOTHER USER
+    //MAY ADD "LIMIT XX" AS APP GROWS. THIS WILL REQIURE UPDATE TO 
+    //VAULTKEEP GET METHODS AS WELL
     public IEnumerable<Keep> GetKeeps(string userId)
     {
       return _db.Query<Keep>(@"
       SELECT *
       FROM keeps
       WHERE isPrivate=0 OR userId=@userId 
-      ORDER BY id DESC
-      LIMIT 40;", new { userId });
+      ORDER BY id DESC;", new { userId });
     }
 
     //GET ADDITIONAL 40 KEEPS
+    //NOT USING AT THIS TIME
     //DO NOT RETURN PRIVATE KEEPS BY ANOTHER USER
     public IEnumerable<Keep> GetMoreKeeps(int id, string userId)
     {

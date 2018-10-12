@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 sm6 md3>
+  <v-flex xs12 sm6 md4>
     <v-card>
       <v-img :src="keep.img"></v-img>
       <v-card-text class="grey lighten-3">
@@ -14,19 +14,12 @@
         </div>
       </v-card-title>
       <v-card-actions class="grey lighten-3" id="action-bar">
-        <v-btn v-if="keep.userId != user.id" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
+        <v-btn v-if="user.id!=keep.userId" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
         <v-btn v-if="keep.isPrivate" @click="makePublic(keep)" small fab flat color="purple accent-2"><i class="material-icons">public</i></v-btn>
         <v-btn v-if="!keep.isPrivate" @click="smVisible=!smVisible" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
         <v-btn v-if="user.id==keep.userId && keep.isPrivate==1" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i
             class="material-icons">delete_forever</i></v-btn>
-        <v-menu offset-y>
-          <v-btn slot="activator" small fab flat color="purple accent-2"><i class="material-icons">add_circle</i></v-btn>
-          <v-list>
-            <v-list-tile v-for="vault in vaults" :key="vault.id" @click="addKeepToVault(keep, vault.id)">
-              <v-list-tile-title>{{vault.name}}</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
+        <v-btn @click="removeKeepFromVault(keep.id)" small fab flat color="purple accent-2"><i class="material-icons clickable">remove_circle_outline</i></v-btn>
       </v-card-actions>
       <v-card-actions v-if="smVisible" class="grey lighten-3" id="media-bar">
         <v-btn @click="shareKeep(keep, 'facebook')" small fab flat color="purple accent-2"><i class="fab fa-facebook-square large-font"></i></v-btn>
@@ -39,25 +32,28 @@
 
 <script>
   export default {
-    name: "KeepView",
+    name: "VKView",
     data() {
       return {
         smVisible: false
       };
-
     },
-    props: ["keep", "user", "vaults"],
+    props: ["keep", "user", "activeVaultId"],
     methods: {
       deleteKeep(keep) {
-        this.$store.dispatch('deleteKeep', { Id: keep.id, UserId: keep.userId, IsPrivate: keep.isPrivate });
+        this.$store.dispatch("deleteKeep", {
+          Id: keep.id,
+          UserId: keep.userId,
+          IsPrivate: keep.isPrivate
+        });
       },
 
-      addKeepToVault(keep, vaultId) {
-        this.$store.dispatch("addKeepToVault", {
-          vaultAdd: { VaultId: vaultId, KeepId: keep.id, UserId: this.user.id },
-          keepUpdate: keep
-        })
-
+      removeKeepFromVault(keepId) {
+        this.$store.dispatch("removeKeepFromVault", {
+          VaultId: this.activeVaultId,
+          KeepId: keepId,
+          UserId: this.user.id
+        });
       },
 
       makePublic(keep) {
@@ -85,8 +81,7 @@
     text-align: left;
   }
 
-  #action-bar,
-  #media-bar {
+  #action-bar {
     display: flex;
     justify-content: space-between;
   }

@@ -18,7 +18,7 @@ namespace keepr.Controllers
       _repo = repo;
     }
 
-    //GET 40 MOST RECENT KEEPS
+    //GET ALL KEEPS
     [HttpGet]
     public IEnumerable<Keep> Get()
     {
@@ -28,6 +28,7 @@ namespace keepr.Controllers
     }
 
     //GET MORE KEEPS - returns next 40 keeps
+    //NOT USED AT THIS TIME, BUT COULD BE USEFUL IF APP GROWS
     //param id is the id of the last post retrieved
     [HttpGet("more/{id}")]
     public IEnumerable<Keep> Get([FromRoute] int id)
