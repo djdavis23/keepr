@@ -32,10 +32,10 @@
     <h3><i class="material-icons clickable" @click="vaultForm=!vaultForm">add_circle</i></h3>
     <v-card v-if="vaultForm" color="grey lighten-3">
       <v-card-title>Add New Vault:</v-card-title>
-      <v-form @submit.prevent="createVault">
-        <v-text-field v-model="newVault.Name" label="Name" required></v-text-field>
-        <v-text-field v-model="newVault.Description" label="Description" required></v-text-field>
-        <v-btn round small dark color="blue accent-2" type="submit">Create</v-btn>
+      <v-form ref="vform" v-model="vvalid" @submit.prevent="createVault">
+        <v-text-field counter=30 v-model="newVault.Name" :rules="nameRules" label="Name" required></v-text-field>
+        <v-text-field counter=255 v-model="newVault.Description" :rules="descriptionRules" label="Description" required></v-text-field>
+        <v-btn round small dark :disabled="!vvalid" color="blue accent-2" type="submit">Create</v-btn>
       </v-form>
     </v-card>
   </div>
@@ -61,21 +61,32 @@
           Name: "",
           Description: "",
           UserId: ""
-        }
+        },
+        vvalid: true,
+
+        nameRules: [
+          v => !!v || "Name is required",
+          v => (v && v.length <= 30) || "Name cannot exceed 30 characters"
+        ],
+        descriptionRules: [
+          v => (v.length <= 255) || "Description cannot exceed 255 characters"
+        ]
       }
     },
 
     methods: {
 
       createVault() {
-        this.newVault.UserId = this.user.id;
-        this.$store.dispatch('addVault', this.newVault);
-        this.newVault = {
-          Name: "",
-          Description: "",
-          UserId: ""
+        if (this.$refs.vform.validate()) {
+          this.newVault.UserId = this.user.id;
+          this.$store.dispatch('addVault', this.newVault);
+          this.newVault = {
+            Name: "",
+            Description: "",
+            UserId: ""
+          }
+          this.vaultForm = false;
         }
-        this.vaultForm = false;
       },
 
       deleteVault(vault) {
