@@ -114,10 +114,5 @@
   };
 </script>
 <style>
-  .main {
-    height: 90vh;
-    width: 150vw;
-    background-image: url('../assets/social-media-logos.jpg');
 
-  }
 </style>
