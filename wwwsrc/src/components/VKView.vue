@@ -14,12 +14,26 @@
         </div>
       </v-card-title>
       <v-card-actions class="grey lighten-3" id="action-bar">
-        <v-btn v-if="user.id!=keep.userId" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
-        <v-btn v-if="keep.isPrivate" @click="makePublic(keep)" small fab flat color="purple accent-2"><i class="material-icons">public</i></v-btn>
-        <v-btn v-if="!keep.isPrivate" @click="smVisible=!smVisible" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
-        <v-btn v-if="user.id==keep.userId && keep.isPrivate==1" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i
-            class="material-icons">delete_forever</i></v-btn>
-        <v-btn @click="removeKeepFromVault(keep.id)" small fab flat color="purple accent-2"><i class="material-icons clickable">remove_circle_outline</i></v-btn>
+        <v-tooltip bottom v-if="user.id!=keep.userId">
+          <v-btn slot="activator" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
+          <span>Like Keep</span>
+        </v-tooltip>
+        <v-tooltip bottom v-if="keep.isPrivate">
+          <v-btn slot="activator" @click="makePublic(keep)" small fab flat color="purple accent-2"><i class="material-icons">public</i></v-btn>
+          <span>Make Keep Public</span>
+        </v-tooltip>
+        <v-tooltip bottom v-if="!keep.isPrivate">
+          <v-btn slot="activator" @click=" smVisible=!smVisible" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
+          <span>Share Keep</span>
+        </v-tooltip>
+        <v-tooltip bottom v-if="user.id==keep.userId && keep.isPrivate==1">
+          <v-btn slot="activator" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">delete_forever</i></v-btn>
+          <span>Delete Keep</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-btn slot="activator" @click="removeKeepFromVault(keep.id)" small fab flat color="purple accent-2"><i class="material-icons clickable">remove_circle_outline</i></v-btn>
+          <span>Remove from vault</span>
+        </v-tooltip>
       </v-card-actions>
       <v-card-actions v-if="smVisible" class="grey lighten-3" id="media-bar">
         <v-btn @click="shareKeep(keep, 'facebook')" small fab flat color="purple accent-2"><i class="fab fa-facebook-square large-font"></i></v-btn>

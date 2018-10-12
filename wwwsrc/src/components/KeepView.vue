@@ -14,19 +14,22 @@
         </div>
       </v-card-title>
       <v-card-actions class="grey lighten-3" id="action-bar">
-        <v-btn v-if="keep.userId != user.id" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
-        <v-tooltip bottom>
-          <v-btn v-if="keep.isPrivate" slot="activator" @click="makePublic(keep)" small fab flat color="purple accent-2"><i
-              class="material-icons">public</i></v-btn>
+        <v-tooltip bottom v-if="keep.userId != user.id">
+          <v-btn slot="activator" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
+          <span>Like Keep</span>
+        </v-tooltip>
+        <v-tooltip bottom v-if="keep.isPrivate">
+          <v-btn slot="activator" @click="makePublic(keep)" small fab flat color="purple accent-2"><i class="material-icons">public</i></v-btn>
           <span>Make keep public</span>
         </v-tooltip>
-        <v-tooltip bottom>
-          <v-btn v-if="!keep.isPrivate" slot="activator" @click="smVisible=!smVisible" small fab flat color="purple accent-2"><i
-              class="material-icons">share</i></v-btn>
+        <v-tooltip bottom v-if="!keep.isPrivate">
+          <v-btn slot="activator" @click="smVisible=!smVisible" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
           <span>Share Keep</span>
         </v-tooltip>
-        <v-btn v-if="user.id==keep.userId && keep.isPrivate==1" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i
-            class="material-icons">delete_forever</i></v-btn>
+        <v-tooltip bottom v-if="user.id==keep.userId && keep.isPrivate==1">
+          <v-btn slot="activator" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">delete_forever</i></v-btn>
+          <span>Delete Keep</span>
+        </v-tooltip>
         <v-menu offset-y>
           <v-btn slot="activator" small fab flat color="purple accent-2"><i class="material-icons">add_circle</i></v-btn>
           <v-list class="grey lighten-3">
