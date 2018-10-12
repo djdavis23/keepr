@@ -29,10 +29,13 @@
         </v-card>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    <h3><i class="material-icons clickable" @click="vaultForm=!vaultForm">add_circle</i></h3>
+    <v-tooltip bottom>
+      <v-btn small fab color="blue accent-2" slot="activator" @click="vaultForm=!vaultForm"><i class="fas fa-plus white--text"></i></v-btn>
+      <span>Add New Vault</span>
+    </v-tooltip>
     <v-card v-if="vaultForm" color="grey lighten-3">
-      <v-card-title>Add New Vault:</v-card-title>
-      <v-form ref="vform" v-model="vvalid" @submit.prevent="createVault">
+      <v-card-title class="blue--text">Add New Vault:</v-card-title>
+      <v-form class="mr-5 ml-5" ref="vform" v-model="vvalid" @submit.prevent="createVault">
         <v-text-field counter=30 v-model="newVault.Name" :rules="nameRules" label="Name" required></v-text-field>
         <v-text-field counter=255 v-model="newVault.Description" :rules="descriptionRules" label="Description" required></v-text-field>
         <v-btn round small dark :disabled="!vvalid" color="blue accent-2" type="submit">Create</v-btn>

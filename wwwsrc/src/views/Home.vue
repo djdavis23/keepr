@@ -7,7 +7,10 @@
         <v-form @submit="searchKeeps">
           <v-text-field clearable dark prepend-icon="fas fa-search"><i class="fas fa-search"></i></v-text-field>
         </v-form>
-        <v-btn dark small fab flat @click="keepForm=!keepForm"><i class="material-icons">add_circle</i></v-btn>
+        <v-tooltip bottom>
+          <v-btn dark small fab flat slot="activator" @click="keepForm=!keepForm"><i class="material-icons">add_circle</i></v-btn>
+          <span>New Keep</span>
+        </v-tooltip>
         <v-btn small flat dark @click="logout">Logout</v-btn>
       </v-toolbar-items>
     </v-toolbar>

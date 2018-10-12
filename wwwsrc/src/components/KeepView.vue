@@ -15,13 +15,25 @@
       </v-card-title>
       <v-card-actions class="grey lighten-3" id="action-bar">
         <v-btn v-if="keep.userId != user.id" @click="likeKeep(keep)" small fab flat color="purple accent-2"><i class="material-icons">thumb_up</i></v-btn>
-        <v-btn v-if="keep.isPrivate" @click="makePublic(keep)" small fab flat color="purple accent-2"><i class="material-icons">public</i></v-btn>
-        <v-btn v-if="!keep.isPrivate" @click="smVisible=!smVisible" small fab flat color="purple accent-2"><i class="material-icons">share</i></v-btn>
+        <v-tooltip bottom>
+          <v-btn v-if="keep.isPrivate" slot="activator" @click="makePublic(keep)" small fab flat color="purple accent-2"><i
+              class="material-icons">public</i></v-btn>
+          <span>Make keep public</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <v-btn v-if="!keep.isPrivate" slot="activator" @click="smVisible=!smVisible" small fab flat color="purple accent-2"><i
+              class="material-icons">share</i></v-btn>
+          <span>Share Keep</span>
+        </v-tooltip>
         <v-btn v-if="user.id==keep.userId && keep.isPrivate==1" @click="deleteKeep(keep)" small fab flat color="purple accent-2"><i
             class="material-icons">delete_forever</i></v-btn>
         <v-menu offset-y>
           <v-btn slot="activator" small fab flat color="purple accent-2"><i class="material-icons">add_circle</i></v-btn>
-          <v-list>
+          <v-list class="grey lighten-3">
+            <v-list-tile class="blue--text font-weight-bold">
+              <v-list-tile-title>Add to Vault:</v-list-tile-title>
+            </v-list-tile>
+            <hr />
             <v-list-tile v-for="vault in vaults" :key="vault.id" @click="addKeepToVault(keep, vault.id)">
               <v-list-tile-title>{{vault.name}}</v-list-tile-title>
             </v-list-tile>
