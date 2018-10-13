@@ -14,7 +14,7 @@ let auth = Axios.create({
 let api = Axios.create({
   baseURL: "//localhost:5000/api/",
   timeout: 3000,
-  withCredentials: true
+  withCredentials: true,
 })
 
 export default new Vuex.Store({
