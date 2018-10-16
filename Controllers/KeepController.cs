@@ -45,6 +45,8 @@ namespace keepr.Controllers
       return _repo.GetById(id);
     }
 
+    //SEARCH FOR KEEPS BY TOPIC
+
     //CREATE NEW KEEP
     [HttpPost]
     [Authorize]

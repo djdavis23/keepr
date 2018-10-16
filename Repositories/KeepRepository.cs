@@ -49,6 +49,14 @@ namespace keepr.Repositories
         WHERE id = @id;", new { id }).FirstOrDefault();
     }
 
+    public IEnumerable<Keep> GetByTopic(string pattern)
+    {
+      return _db.Query<Keep>(@"
+      SELECT * FROM keeps
+      WHERE title LIKE %@pattern% OR description LIKE %@pattern%;
+      ", new { pattern });
+    }
+
     //POST A NEW KEEP
     public Keep Create(KeepForm keep)
     {
