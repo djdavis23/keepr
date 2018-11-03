@@ -24,6 +24,7 @@ export default new Vuex.Store({
   state: {
     user: {},
     keeps: [],
+    searchKeeps: [],
     vaults: [],
     vaultKeeps: {},
     activeVaultId: "",
@@ -50,6 +51,11 @@ export default new Vuex.Store({
 
     addKeep(state, keep) {
       state.keeps.unshift(keep);
+    },
+
+    setSearchKeeps(state, keeps) {
+      state.searchKeeps = keeps;
+      console.log("search keeps: ", keeps.length)
     },
 
     //VAULT MUTATIONS
@@ -177,6 +183,15 @@ export default new Vuex.Store({
         })
         .catch(err => (console.error(err)))
     },
+
+    getKeepsByTopic({ commit }, topic) {
+      api.get(`Keep/search/${topic}`)
+        .then(res => {
+          commit("setSearchKeeps", res.data)
+        })
+        .catch(err => console.error(err))
+    },
+
     createKeep({ commit }, keep) {
       api.post("Keep", keep)
         .then(res => {

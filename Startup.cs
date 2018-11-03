@@ -64,7 +64,7 @@ namespace keepr
       services.AddTransient<KeepRepository>();
       services.AddTransient<VaultRepository>();
       services.AddTransient<VaultKeepRepository>();
-      // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+      //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
     }
 
     private IDbConnection CreateDBContext()

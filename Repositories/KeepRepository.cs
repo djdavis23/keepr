@@ -53,7 +53,7 @@ namespace keepr.Repositories
     {
       return _db.Query<Keep>(@"
       SELECT * FROM keeps
-      WHERE title LIKE %@pattern% OR description LIKE %@pattern%;
+      WHERE name LIKE @pattern OR description LIKE @pattern;
       ", new { pattern });
     }
 

@@ -4,8 +4,8 @@
       <v-toolbar-title><i class="fab fa-kickstarter"></i> {{user.username}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items id="tool-bar">
-        <v-form @submit="searchKeeps">
-          <v-text-field clearable dark prepend-icon="fas fa-search"><i class="fas fa-search"></i></v-text-field>
+        <v-form @submit.prevent="searchKeeps">
+          <v-text-field v-model="searchTerm" clearable dark prepend-icon="fas fa-search"><i class="fas fa-search"></i></v-text-field>
         </v-form>
         <v-tooltip bottom>
           <v-btn dark small fab flat slot="activator" @click="keepForm=!keepForm"><i class="material-icons">add_circle</i></v-btn>
@@ -86,7 +86,8 @@
         imgRules: [
           v => (v.length <= 255) || "Image URL cannot exceed 255 characters"
         ],
-        valid: true
+        valid: true,
+        searchTerm: ""
       }
     },
 
@@ -118,6 +119,8 @@
 
       searchKeeps() {
         alert("This feature coming soon!")
+        let searchPattern = '%' + this.searchTerm + '%'
+        this.$store.dispatch("getKeepsByTopic", searchPattern)
       }
     },
 

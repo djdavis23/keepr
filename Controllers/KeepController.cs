@@ -30,13 +30,13 @@ namespace keepr.Controllers
     //GET MORE KEEPS - returns next 40 keeps
     //NOT USED AT THIS TIME, BUT COULD BE USEFUL IF APP GROWS
     //param id is the id of the last post retrieved
-    [HttpGet("more/{id}")]
-    public IEnumerable<Keep> Get([FromRoute] int id)
-    {
-      string userId = HttpContext.User.Identity.Name;
-      if (userId == null) userId = "not-logged-in";
-      return _repo.GetMoreKeeps(id, userId);
-    }
+    // [HttpGet("more/{id}")]
+    // public IEnumerable<Keep> Get([FromRoute] int id)
+    // {
+    //   string userId = HttpContext.User.Identity.Name;
+    //   if (userId == null) userId = "not-logged-in";
+    //   return _repo.GetMoreKeeps(id, userId);
+    // }
 
     //GET KEEP BY ID
     [HttpGet("{id}")]
@@ -46,6 +46,11 @@ namespace keepr.Controllers
     }
 
     //SEARCH FOR KEEPS BY TOPIC
+    [HttpGet("search/{searchTerm}")]
+    public IEnumerable<Keep> GetByTopic([FromRoute] string searchTerm)
+    {
+      return _repo.GetByTopic(searchTerm);
+    }
 
     //CREATE NEW KEEP
     [HttpPost]
