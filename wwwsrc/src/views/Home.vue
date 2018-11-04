@@ -1,11 +1,14 @@
 <template>
   <div id="login">
+    <!-- Toolbar header -->
     <v-toolbar fixed color="blue accent-2" class="white--text">
       <v-toolbar-title><i class="fab fa-kickstarter"></i> {{user.username}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items id="tool-bar">
-        <v-form @submit.prevent="searchKeeps">
-          <v-text-field v-model="searchTerm" clearable dark prepend-icon="fas fa-search"><i class="fas fa-search"></i></v-text-field>
+        <v-btn dark small flat v-if="search" @click="search=!search">Clear Search</v-btn>
+        <v-form @submit.prevent="searchKeeps" v-if="!search">
+          <v-text-field v-model="searchTerm" clearable dark prepend-icon="fas fa-search" placeholder="Search by topic"><i
+              class="fas fa-search"></i></v-text-field>
         </v-form>
         <v-tooltip bottom>
           <v-btn dark small fab flat slot="activator" @click="keepForm=!keepForm"><i class="material-icons">add_circle</i></v-btn>
@@ -14,14 +17,19 @@
         <v-btn small flat dark @click="logout">Logout</v-btn>
       </v-toolbar-items>
     </v-toolbar>
+
+    <!-- Main display -->
     <v-container fluid mt-5 mb-4 grid-list-sm align-content-center>
       <v-layout row wrap>
+        <!-- Display user vaults on left side -->
         <v-flex xs12 md3>
           <Vaults :user="user" :vaults="vaults" />
         </v-flex>
+        <!-- Display keeps on right side -->
         <v-flex xs12 md9>
           <v-layout>
             <v-flex xs12 md8 offset-md2>
+              <!-- Display form for creating new keep -->
               <v-card v-if="keepForm" color="grey lighten-3">
                 <v-toolbar class="grey darken-3 white--text">
                   <v-toolbar-title>Add a new keep:</v-toolbar-title>
@@ -38,7 +46,10 @@
             </v-flex>
           </v-layout>
           <v-layout row wrap>
-            <KeepView v-for="keep in keeps" :key="keep.id" :keep="keep" :user="user" :vaults="vaults" />
+            <!-- view all keeps -->
+            <KeepView v-if="!search" v-for="keep in keeps" :key="keep.id" :keep="keep" :user="user" :vaults="vaults" />
+            <!-- view keeps based on search parameter -->
+            <KeepView v-if="search" v-for="keep in searchResults" :key="keep.id" :keep="keep" :user="user" :vaults="vaults" />
           </v-layout>
         </v-flex>
       </v-layout>
@@ -87,6 +98,7 @@
           v => (v.length <= 255) || "Image URL cannot exceed 255 characters"
         ],
         valid: true,
+        search: false,
         searchTerm: ""
       }
     },
@@ -118,9 +130,10 @@
       },
 
       searchKeeps() {
-        alert("This feature coming soon!")
         let searchPattern = '%' + this.searchTerm + '%'
         this.$store.dispatch("getKeepsByTopic", searchPattern)
+        this.searchTerm = ""
+        this.search = true
       }
     },
 
@@ -133,6 +146,9 @@
       },
       vaults() {
         return this.$store.state.vaults
+      },
+      searchResults() {
+        return this.$store.state.searchKeeps
       }
 
     }
@@ -145,5 +161,9 @@
 
   #tagline {
     margin-right: 5px;
+  }
+
+  #inline-form {
+    display: inline;
   }
 </style>
